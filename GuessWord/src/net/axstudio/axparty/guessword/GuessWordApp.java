@@ -29,7 +29,7 @@ public class GuessWordApp extends Application
 		if (null == mWordLib)
 		{
 			mWordLib = new WordLib(this);
-			mWordLib.load();
+			mWordLib.load(this);
 		}
 		return mWordLib;
 	}

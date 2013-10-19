@@ -1,29 +1,15 @@
 package net.axstudio.axparty.guessword;
 
-import java.io.Serializable;
-import java.util.Locale;
 import java.util.Vector;
 
-import android.content.Context;
-
-class WordLibEntry implements Serializable
+class WordLibEntry
 {
-	private static final long serialVersionUID = 4939255979078222231L;
 
-	Vector<WordLibElement> mElements;
-
-	/**
-	 * 
-	 */
-	private final Context mContext;
 	int numChars;
-
-	/**
-	 * @param mContext
-	 */
-	WordLibEntry(Context context)
+	final Vector<WordLibElement> mElements = new Vector<WordLibElement>();
+	WordLibEntry()
 	{
-		this.mContext = context;
+
 	}
 
 	public String[] genWord()
@@ -39,9 +25,11 @@ class WordLibEntry implements Serializable
 
 	}
 
-	public String toString()
-	{
-		return String.format(Locale.getDefault(), this.mContext.getResources()
-				.getString(R.string.word_num_name), numChars);
-	}
+//	public String toString()
+//	{
+//		return Integer.toString( numChars );
+//		
+////		return String.format(Locale.getDefault(), this.mContext.getResources()
+////				.getString(R.string.word_num_name), numChars);
+//	}
 }
