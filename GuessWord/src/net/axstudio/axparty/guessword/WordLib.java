@@ -187,24 +187,40 @@ public class WordLib
 
 			for (int i = 0; i < mapLib.size(); ++i)
 			{
-				WordLibEntry entry = new WordLibEntry();
-				entry.numChars = mapLib.keyAt(i);
 
-				for (Entry<String, Vector<String>> element : mapLib.valueAt(i)
-						.entrySet())
+				Map<String, Vector<String>> map = mapLib.valueAt(i);
+
+				for (String k : map.keySet())
 				{
-					if (element.getValue().size() > 2)
-					{
-						WordLibElement e = new WordLibElement();
-						e.key = element.getKey();
-						e.words = new String[element.getValue().size()];
-						element.getValue().toArray(e.words);
-						entry.mElements.add(e);
-					}
+					if (map.get(k).size() < 2)
+						map.remove(k);
 				}
 
-				if (entry.mElements.size() > 0)
-					mEntries.put(entry.numChars, entry);
+				if (map.size() > 1)
+				{
+
+					WordLibEntry entry = new WordLibEntry();
+					entry.mNumChars = mapLib.keyAt(i);
+					entry.mKeys = "";
+					entry.mWords = new String[map.size()];
+
+					for (Entry<String, Vector<String>> element : map.entrySet())
+					{
+						assert (element.getKey().length() == 1);
+						assert (element.getValue().size() >= 2);
+						String words = "";
+						for (String w : element.getValue())
+						{
+							assert (w.length() == entry.mNumChars);
+							words += w;
+						}
+
+						entry.mWords[entry.mKeys.length()] = words;
+						entry.mKeys += element.getKey();
+					}
+
+					mEntries.put(entry.mNumChars, entry);
+				}
 			}
 		}
 		catch (IOException e)
@@ -228,21 +244,22 @@ public class WordLib
 			for (int i = 0; i < numEntries; ++i)
 			{
 				WordLibEntry entry = new WordLibEntry();
-				entry.numChars = strm.readInt();
-				entry.mElements.setSize(strm.readInt());
-				for (int j = 0; j < entry.mElements.size(); ++j)
+				entry.mNumChars = strm.readInt();
+				final int numKeys = strm.readInt();
+				entry.mKeys = "";
+				entry.mWords = new String[numKeys];
+				for (int j = 0; j < numKeys; ++j)
 				{
-					WordLibElement element = new WordLibElement();
-					element.key = strm.readUTF();
-					element.words = new String[strm.readInt()];
-					for (int k = 0; k < element.words.length; ++k)
+					entry.mKeys += strm.readUTF();
+					entry.mWords[j] = "";
+					final int numWords = strm.readInt();
+					for (int k = 0; k < numWords; ++k)
 					{
-						element.words[k] = strm.readUTF();
+						entry.mWords[j] += strm.readUTF();
 					}
-					entry.mElements.set(j, element);
 
 				}
-				this.mEntries.put(entry.numChars, entry);
+				this.mEntries.put(entry.mNumChars, entry);
 			}
 		}
 		catch (IOException e)
@@ -268,13 +285,14 @@ public class WordLib
 			WordLibEntry entry = mEntries.get(i);
 			if (entry != null)
 			{
-				strm.writeInt(entry.numChars);
-				strm.writeInt(entry.mElements.size());
-				for (WordLibElement element : entry.mElements)
+				strm.writeInt(entry.mNumChars);
+				strm.writeInt(entry.mKeys.length());
+				//for (WordLibElement element : entry.mElements)
+				for ( int j = 0; j < entry.mKeys.length(); ++j)
 				{
-					strm.writeUTF(element.key);
-					strm.writeInt(element.words.length);
-					for (String w : element.words)
+					strm.writeUTF(entry.getKey(j));
+					strm.writeInt(entry.getNumWords(j));
+					for (String w : entry.getWords(j))
 						strm.writeUTF(w);
 				}
 

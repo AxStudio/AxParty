@@ -49,7 +49,7 @@ public class MainActivity extends Activity
 			// bundle.putSerializable("game",game);
 			// intent.putExtra("bundle", bundle);
 			intent.putExtra("numPlayers", numPlayers);
-			intent.putExtra("numWordChars", entry.numChars);
+			intent.putExtra("numWordChars", entry.mNumChars);
 			intent.setClass(this, GameActivity.class);
 			startActivity(intent);
 			finish();
