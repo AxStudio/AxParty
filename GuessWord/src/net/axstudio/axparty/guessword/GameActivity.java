@@ -5,7 +5,10 @@ import java.util.Vector;
 import net.axstudio.axparty.guessword.Game.Player;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -97,7 +100,7 @@ public class GameActivity extends Activity
 		}
 		((ScrollView) findViewById(R.id.scrollView1)).addView(layout);
 		// setContentView(layout);
-		
+
 		mGame.start();
 
 	}
@@ -114,5 +117,57 @@ public class GameActivity extends Activity
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		switch (keyCode)
+		{
+		case KeyEvent.KEYCODE_BACK:
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setIcon(getResources().getDrawable(
+					android.R.drawable.ic_dialog_alert));
+			builder.setTitle(getString(R.string.exit_alert_title));
+			builder.setMessage(getString(R.string.exit_alert_title));
+			builder.setNegativeButton(android.R.string.yes,
+					new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							System.exit(0);
+						}
+					});
+			builder.setPositiveButton(android.R.string.no,
+					new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							//finish();
+						}
+					});
+			builder.create().show();
+
+			return true;
+
+		default:
+			break;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+//
+//	@Override
+//	public void onBackPressed()
+//	{
+//
+//		 super.onBackPressed();
+//	}
 
 }

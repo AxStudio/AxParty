@@ -14,5 +14,6 @@
     <string name="player_name">玩家(%1$d)</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="exit_alert_title">确定要退出吗？</string>
 
 </resources>
