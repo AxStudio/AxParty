@@ -1,18 +1,7 @@
 package net.axstudio.axparty.guessword;
 
-import java.io.Serializable;
-import java.util.Locale;
-
-import android.content.Context;
-
-public class Rule extends Object implements Cloneable, Serializable
+public class Rule
 {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 851395172726679830L;
-	private Context mContext;
 
 	enum PlayerType
 	{
@@ -24,15 +13,13 @@ public class Rule extends Object implements Cloneable, Serializable
 	{
 		PlayerType playerType;
 		int numPlayers;
-
 	}
 
 	private PlayerTypeInfo[] mPlayerInfos;
 
-	public Rule(Context context)
+	public Rule()
 	{
 
-		mContext = context;
 		mPlayerInfos = new PlayerTypeInfo[PlayerType.values().length];
 		for (PlayerType type : PlayerType.values())
 		{
@@ -43,17 +30,33 @@ public class Rule extends Object implements Cloneable, Serializable
 		}
 	}
 
-	public Rule(Context context, int[] numPlayers)
+	public Rule(int[] numPlayers)
 	{
-		this(context);
+		this();
 
-		resetPlayerNumbers(numPlayers != null ? numPlayers : new int[] { 3, 2, 2 });
+		resetPlayerNumbers(numPlayers != null ? numPlayers : new int[] { 3, 2,
+				2 });
 	}
 
-	public Rule(Context context, int major, int minor, int idiot)
+	public Rule(int major, int minor, int idiot)
 	{
-		this(context, new int[] { major, minor, idiot });
+		this(new int[] { major, minor, idiot });
 
+	}
+
+	public Rule(PlayerTypeInfo[] info)
+	{
+		this();
+		for (PlayerTypeInfo i : info)
+		{
+			setNumPlayersByType(i.playerType, i.numPlayers);
+		}
+
+	}
+
+	public PlayerTypeInfo[] getData()
+	{
+		return mPlayerInfos;
 	}
 
 	private void resetPlayerNumbers(int[] numPlayers)
@@ -74,18 +77,10 @@ public class Rule extends Object implements Cloneable, Serializable
 		return mPlayerInfos[type.ordinal()].numPlayers;
 	}
 
-	public Rule clone() // throws CloneNotSupportedException
+	public void setNumPlayersByType(PlayerType type, int numPlayer)
 	{
-		try
-		{
-			return (Rule) super.clone();
+		mPlayerInfos[type.ordinal()].numPlayers = numPlayer;
 
-		}
-		catch (CloneNotSupportedException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	// public boolean genPlayers(int totalPlayers, boolean noMinorities)
@@ -126,20 +121,20 @@ public class Rule extends Object implements Cloneable, Serializable
 	// return true;
 	// }
 
-	public String getDesciption()
-	{
-		return String.format(Locale.getDefault(),
-				mContext.getString(R.string.rule_name), getTotalPlayers(),
-				getNumPlayersByType(PlayerType.MAJOR),
-				getNumPlayersByType(PlayerType.MINOR),
-				getNumPlayersByType(PlayerType.IDIOT));
+	// public String getDesciption()
+	// {
+	// return String.format(Locale.getDefault(),
+	// mContext.getString(R.string.rule_name), getTotalPlayers(),
+	// getNumPlayersByType(PlayerType.MAJOR),
+	// getNumPlayersByType(PlayerType.MINOR),
+	// getNumPlayersByType(PlayerType.IDIOT));
+	//
+	// }
 
-	}
-
-	public String toString()
-	{
-		return getDesciption();
-	}
+	// public String toString()
+	// {
+	// return getDesciption();
+	// }
 
 	public int getTotalPlayers()
 	{

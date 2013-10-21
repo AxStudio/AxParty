@@ -69,7 +69,7 @@ public class GameActivity extends Activity
 		setContentView(R.layout.activity_game);
 
 		mGame = new Game(this);
-		Rule rule = new Rule(this, getIntent().getIntArrayExtra("numPlayers"));
+		Rule rule = new Rule(getIntent().getIntArrayExtra("numPlayers"));
 
 		WordLibEntry words = ((GuessWordApp) getApplication()).getWordLib()
 				.getEntry(getIntent().getIntExtra("numWordChars", 2));
@@ -129,7 +129,7 @@ public class GameActivity extends Activity
 		switch (keyCode)
 		{
 		case KeyEvent.KEYCODE_BACK:
-			
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setIcon(getResources().getDrawable(
 					android.R.drawable.ic_dialog_alert));
@@ -150,7 +150,7 @@ public class GameActivity extends Activity
 						@Override
 						public void onClick(DialogInterface dialog, int which)
 						{
-							//finish();
+							// finish();
 						}
 					});
 			builder.create().show();
@@ -162,12 +162,12 @@ public class GameActivity extends Activity
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-//
-//	@Override
-//	public void onBackPressed()
-//	{
-//
-//		 super.onBackPressed();
-//	}
+	//
+	// @Override
+	// public void onBackPressed()
+	// {
+	//
+	// super.onBackPressed();
+	// }
 
 }

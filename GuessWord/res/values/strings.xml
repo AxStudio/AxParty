@@ -13,7 +13,12 @@
     <string name="word_num_name">%d 字词</string>
     <string name="player_name">玩家(%1$d)</string>
     <string name="title_activity_game">GameActivity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="exit_alert_title">确定要退出吗？</string>
+    <string name="title_activity_start_game">StartGame</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="exit">退出</string>
+    <string name="title_select_player_num">玩家人数</string>
 
 </resources>

@@ -1,6 +1,8 @@
 package net.axstudio.axparty.guessword;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class GuessWordApp extends Application
 {
@@ -15,14 +17,12 @@ public class GuessWordApp extends Application
 
 	public Rule[] getDefaultRules()
 	{
-		Rule[] rules = { new Rule(this, 2, 1, 1), new Rule(this, 3, 1, 1),
-				new Rule(this, 3, 2, 1), new Rule(this, 3, 2, 2),
-				new Rule(this, 4, 2, 2), new Rule(this, 5, 2, 2),
-				new Rule(this, 6, 2, 2), };
+		Rule[] rules = { new Rule(2, 1, 1), new Rule(3, 1, 1),
+				new Rule(3, 2, 1), new Rule(3, 2, 2), new Rule(4, 2, 2),
+				new Rule(5, 2, 2), new Rule(6, 2, 2), };
 
 		return rules;
 	}
-
 
 	public WordLib getWordLib()
 	{
@@ -34,7 +34,6 @@ public class GuessWordApp extends Application
 		return mWordLib;
 	}
 
-
 	@Override
 	public void onCreate()
 	{
@@ -42,5 +41,13 @@ public class GuessWordApp extends Application
 		// loadWordLib();
 	}
 
+	static GuessWordApp getApp(Context content)
+	{
+		return (GuessWordApp)content.getApplicationContext();
+	}
+	public SharedPreferences getDefaultGameSetting()
+	{
+		return getSharedPreferences("DefaultGameSetting", Context.MODE_PRIVATE);
+	}
 
 }

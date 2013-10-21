@@ -1,15 +1,12 @@
 package net.axstudio.axparty.guessword;
 
-import java.io.Serializable;
 import java.util.Vector;
 
 import android.content.Context;
 import net.axstudio.axparty.guessword.Rule.PlayerType;
 
-public class Game implements Serializable
+public class Game
 {
-
-	private static final long serialVersionUID = 4189940365786790957L;
 
 	class Player
 	{
@@ -29,14 +26,14 @@ public class Game implements Serializable
 	WordLibEntry mWords;
 
 	Vector<Player> mPlayers = new Vector<Game.Player>();
-//	Vector<Player> mMajors = new Vector<Game.Player>();
-//	Vector<Player> mMinors = new Vector<Game.Player>();
-//	Vector<Player> mIdiots = new Vector<Game.Player>();
 
-	public void init(Rule rule,
-			WordLibEntry words)
+	// Vector<Player> mMajors = new Vector<Game.Player>();
+	// Vector<Player> mMinors = new Vector<Game.Player>();
+	// Vector<Player> mIdiots = new Vector<Game.Player>();
+
+	public void init(Rule rule, WordLibEntry words)
 	{
-		mRule = rule.clone();
+		mRule = new Rule(rule.getData());
 		mWords = words;
 
 		for (int i = 0; i < mRule.getTotalPlayers(); ++i)
@@ -63,11 +60,8 @@ public class Game implements Serializable
 			players.set(j, tmp);
 		}
 
-		
-
-
-//		mMajors.clear();
-		for ( PlayerType type : PlayerType.values())
+		// mMajors.clear();
+		for (PlayerType type : PlayerType.values())
 		{
 			for (int i = 0; i < mRule.getNumPlayersByType(type); ++i)
 			{
@@ -78,13 +72,13 @@ public class Game implements Serializable
 			}
 		}
 	}
-	
+
 	public Player[] getPlayers()
 	{
-		Player[] r= new Player[mPlayers.size()];
+		Player[] r = new Player[mPlayers.size()];
 		mPlayers.toArray(r);
 		return r;
-		
+
 	}
 
 }
