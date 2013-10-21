@@ -29,9 +29,9 @@ public class WordLib
 
 	static final String MAGIC = "AxApGwWl";
 	static final byte[] MAGIC_BYTES = MAGIC.getBytes();
-	static final int CURRENT_VERSION = 20131017;
+	static final int CURRENT_VERSION = 20131021;
 	private static final String LOAD_BIN_PREFIX = "loadBin_v";
-	private static final String WORDLIB_INDEX_FILE = "wordlib.idx";
+	// private static final String WORDLIB_INDEX_FILE = "wordlib.idx";
 	private static final String WORDLIB_DATA_FILE = "wordlib.dat";
 	static final SparseArray<Method> READERS = new SparseArray<Method>()
 	{
@@ -54,8 +54,7 @@ public class WordLib
 			}
 		}
 	};
-	
-	
+
 	private byte[] mWordLibHash;
 	private final SparseArray<WordLibEntry> mEntries = new SparseArray<WordLibEntry>();
 
@@ -66,24 +65,28 @@ public class WordLib
 
 	private int loadBin(DataInputStream strm) throws IOException
 	{
-		Log.i(this.getClass().getName(), "loadBin");
-		int version = strm.readInt();
-		Log.i(this.getClass().getName(), "version=" + version);
-		Method method = READERS.get(version);
-		Log.i(this.getClass().getName(), "method="
-				+ ((method == null) ? "null" : method.getName()));
-
-		byte[] hash = new byte[16];
-		strm.readFully(hash);
-
-		if (method == null)
-		{
-			throw (new IOException(String.format("version[%d] not supperted",
-					version)));
-		}
 		try
 		{
+			Log.i(this.getClass().getName(), "loadBin");
+			int version = strm.readInt();
+			Log.i(this.getClass().getName(), "version=" + version);
+			Method method = READERS.get(version);
+			Log.i(this.getClass().getName(), "method="
+					+ ((method == null) ? "null" : method.getName()));
+
+			byte[] hash = new byte[16];
+			strm.readFully(hash);
+
+			if (method == null)
+			{
+				throw (new IOException(String.format(
+						"version[%d] not supperted", version)));
+			}
 			method.invoke(this, strm);
+
+			mWordLibHash = hash;
+
+			return version;
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -100,10 +103,6 @@ public class WordLib
 			e.printStackTrace();
 			throw (new IOException("invoke load method failed"));
 		}
-
-		mWordLibHash = hash;
-		
-		return version;
 	}
 
 	public void load(Context context)
@@ -124,7 +123,7 @@ public class WordLib
 			}
 			{
 
-				if ( loadBin(strm) != CURRENT_VERSION )
+				if (loadBin(strm) != CURRENT_VERSION)
 				{
 					strm.close();
 					saveBin(context);
@@ -158,7 +157,6 @@ public class WordLib
 		Log.i(this.getClass().getName(), "loadFromText");
 		mEntries.clear();
 		mWordLibHash = null;
-		
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				context.getResources().openRawResource(R.raw.words)));
@@ -203,10 +201,9 @@ public class WordLib
 
 				Map<String, Vector<String>> map = mapLib.valueAt(i);
 
-				
-				for (String k : new Vector<String>( map.keySet()) )
+				for (String k : new Vector<String>(map.keySet()))
 				{
-					//Log.i("loadFromText", k);
+					// Log.i("loadFromText", k);
 					if (map.get(k).size() < 2)
 						map.remove(k);
 				}
@@ -249,7 +246,7 @@ public class WordLib
 
 	}
 
-	public void loadBin_v20131017(DataInputStream strm)
+	public void loadBin_v20131017(DataInputStream strm) throws IOException
 	{
 		Log.i(this.getClass().getName(), "loadBin_v20131017");
 
@@ -276,11 +273,47 @@ public class WordLib
 				}
 				this.mEntries.put(entry.mNumChars, entry);
 			}
+
+			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			throw e;
+
 		}
+
+	}
+
+	public void loadBin_v20131021(DataInputStream strm) throws IOException
+	{
+		Log.i(this.getClass().getName(), "loadBin_v20131021");
+
+		try
+		{
+			
+			final int numEntries = strm.readInt();
+			for (int i = 0; i < numEntries; ++i)
+			{
+				WordLibEntry entry = new WordLibEntry();
+				entry.mNumChars = strm.readInt();
+				entry.mKeys = strm.readUTF();
+				entry.mWords = new String[entry.mKeys.length()];
+				for (int j = 0; j < entry.mKeys.length(); ++j)
+				{
+					entry.mWords[j] = strm.readUTF();
+				}
+				this.mEntries.put(entry.mNumChars, entry);
+			}
+			
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+
+		
 
 	}
 
@@ -292,23 +325,44 @@ public class WordLib
 
 	}
 
-	private void _saveBin_v20131017(DataOutputStream strm) throws IOException
+	// private void _saveBin_v20131017(DataOutputStream strm) throws IOException
+	// {
+	// strm.writeInt(mEntries.size());
+	// for (int i = 0; i < mEntries.size(); ++i)
+	// {
+	// WordLibEntry entry = mEntries.get(i);
+	// if (entry != null)
+	// {
+	// strm.writeInt(entry.mNumChars);
+	// strm.writeInt(entry.mKeys.length());
+	// //for (WordLibElement element : entry.mElements)
+	// for ( int j = 0; j < entry.mKeys.length(); ++j)
+	// {
+	// strm.writeUTF(entry.getKey(j));
+	// strm.writeInt(entry.getNumWords(j));
+	// for (String w : entry.getWords(j))
+	// strm.writeUTF(w);
+	// }
+	//
+	// }
+	//
+	// }
+	//
+	// }
+	private void _saveBin_v20131021(DataOutputStream strm) throws IOException
 	{
 		strm.writeInt(mEntries.size());
 		for (int i = 0; i < mEntries.size(); ++i)
 		{
-			WordLibEntry entry = mEntries.get(i);
+			WordLibEntry entry = mEntries.valueAt(i);
 			if (entry != null)
 			{
 				strm.writeInt(entry.mNumChars);
-				strm.writeInt(entry.mKeys.length());
-				//for (WordLibElement element : entry.mElements)
-				for ( int j = 0; j < entry.mKeys.length(); ++j)
+				strm.writeUTF(entry.mKeys);
+				for (int j = 0; j < entry.mKeys.length(); ++j)
 				{
-					strm.writeUTF(entry.getKey(j));
-					strm.writeInt(entry.getNumWords(j));
-					for (String w : entry.getWords(j))
-						strm.writeUTF(w);
+					strm.writeUTF(entry.getWordsString(j));
+					;
 				}
 
 			}
@@ -329,7 +383,7 @@ public class WordLib
 
 			_saveBin_Header(strm);
 
-			_saveBin_v20131017(strm);
+			_saveBin_v20131021(strm);
 		}
 		catch (FileNotFoundException e)
 		{
