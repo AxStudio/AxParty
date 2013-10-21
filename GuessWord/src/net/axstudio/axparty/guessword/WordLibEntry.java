@@ -28,6 +28,7 @@ class WordLibEntry
 	{
 		if (keyPos < 0 || keyPos >= mWords.length)
 			return null;
+		wordPos *= mNumChars;
 		if (wordPos < 0 || wordPos >= mWords[keyPos].length())
 			return null;
 		return mWords[keyPos].substring(wordPos, wordPos + mNumChars);
