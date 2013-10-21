@@ -14,9 +14,12 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
+
 import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
@@ -51,6 +54,8 @@ public class WordLib
 			}
 		}
 	};
+	
+	
 	private byte[] mWordLibHash;
 	private final SparseArray<WordLibEntry> mEntries = new SparseArray<WordLibEntry>();
 
@@ -59,7 +64,7 @@ public class WordLib
 
 	}
 
-	private void loadBin(DataInputStream strm) throws IOException
+	private int loadBin(DataInputStream strm) throws IOException
 	{
 		Log.i(this.getClass().getName(), "loadBin");
 		int version = strm.readInt();
@@ -97,6 +102,8 @@ public class WordLib
 		}
 
 		mWordLibHash = hash;
+		
+		return version;
 	}
 
 	public void load(Context context)
@@ -117,7 +124,11 @@ public class WordLib
 			}
 			{
 
-				loadBin(strm);
+				if ( loadBin(strm) != CURRENT_VERSION )
+				{
+					strm.close();
+					saveBin(context);
+				}
 
 			}
 			return;
@@ -146,6 +157,8 @@ public class WordLib
 	{
 		Log.i(this.getClass().getName(), "loadFromText");
 		mEntries.clear();
+		mWordLibHash = null;
+		
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				context.getResources().openRawResource(R.raw.words)));
@@ -190,8 +203,10 @@ public class WordLib
 
 				Map<String, Vector<String>> map = mapLib.valueAt(i);
 
-				for (String k : map.keySet())
+				
+				for (String k : new Vector<String>( map.keySet()) )
 				{
+					//Log.i("loadFromText", k);
 					if (map.get(k).size() < 2)
 						map.remove(k);
 				}
