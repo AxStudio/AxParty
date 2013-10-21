@@ -403,7 +403,7 @@ public class WordLib
 			r[i] = mEntries.valueAt(i);
 		return r;
 	}
-
+	
 	public WordLibEntry getEntry(int numChars)
 	{
 		return mEntries.get(numChars);

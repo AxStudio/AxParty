@@ -77,12 +77,12 @@ class WordLibEntry
 
 		for (int x = 0; x < 100; ++x)
 		{
-			int i = (int) Math.floor(Math.random() / numWords);
-			int j = (int) Math.floor(Math.random() / numWords);
+			int i = (int) Math.floor(Math.random() * numWords);
+			int j = (int) Math.floor(Math.random() * numWords);
 			if (i != j)
 			{
 				return new String[] { getWord(keyIndex, i),
-						getWord(keyIndex, j), getKey(keyIndex) };
+						getWord(keyIndex, j), getKey(keyIndex) + mNumChars };
 
 			}
 		}
@@ -90,11 +90,4 @@ class WordLibEntry
 
 	}
 
-	// public String toString()
-	// {
-	// return Integer.toString( numChars );
-	//
-	// // return String.format(Locale.getDefault(), this.mContext.getResources()
-	// // .getString(R.string.word_num_name), numChars);
-	// }
 }

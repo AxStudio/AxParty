@@ -1,9 +1,13 @@
 package net.axstudio.axparty.guessword;
 
+import java.util.Locale;
+import java.util.Vector;
+
 import net.axstudio.axparty.guessword.R;
 import net.axstudio.axparty.guessword.Rule.PlayerType;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
@@ -38,7 +42,7 @@ public class MainActivity extends Activity
 		}
 		// Game game = new Game(this);
 		// game.init(rule, major, minor, idiot,
-		WordLibEntry entry = ((WordLibEntry) ((Spinner) findViewById(R.id.SpinnerNumChars))
+		WordLibProxy entry = ((WordLibProxy) ((Spinner) findViewById(R.id.SpinnerNumChars))
 				.getSelectedItem());
 
 		// game.start();
@@ -49,7 +53,7 @@ public class MainActivity extends Activity
 			// bundle.putSerializable("game",game);
 			// intent.putExtra("bundle", bundle);
 			intent.putExtra("numPlayers", numPlayers);
-			intent.putExtra("numWordChars", entry.mNumChars);
+			intent.putExtra("numWordChars", entry.mEntry.mNumChars);
 			intent.setClass(this, GameActivity.class);
 			startActivity(intent);
 			finish();
@@ -76,6 +80,26 @@ public class MainActivity extends Activity
 				edit.setText(Integer.toString(rule.getNumPlayersByType(t)));
 				edit.setEnabled(true);
 			}
+		}
+	}
+
+	class WordLibProxy
+	{
+		Context mContext;
+		WordLibEntry mEntry;
+
+		public WordLibProxy(Context context, WordLibEntry entry)
+		{
+			mContext = context;
+			mEntry = entry;
+		}
+
+		@Override
+		public String toString()
+		{
+			return String.format(Locale.getDefault(), this.mContext
+					.getResources().getString(R.string.word_num_name),
+					mEntry.mNumChars);
 		}
 	}
 
@@ -120,9 +144,13 @@ public class MainActivity extends Activity
 
 			Spinner spinner = (Spinner) findViewById(R.id.SpinnerNumChars);
 
-			ArrayAdapter<WordLibEntry> rules = new ArrayAdapter<WordLibEntry>(
-					this, android.R.layout.simple_spinner_item, app
-							.getWordLib().getEntries());
+			Vector<WordLibProxy> proxies = new Vector<WordLibProxy>();
+			for (WordLibEntry e : app.getWordLib().getEntries())
+			{
+				proxies.add(new WordLibProxy(this, e));
+			}
+			ArrayAdapter<WordLibProxy> rules = new ArrayAdapter<WordLibProxy>(
+					this, android.R.layout.simple_spinner_item, proxies);
 			rules.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			spinner.setAdapter(rules);
 		}
