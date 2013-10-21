@@ -33,6 +33,7 @@ public class WordLib
 	private static final String LOAD_BIN_PREFIX = "loadBin_v";
 	// private static final String WORDLIB_INDEX_FILE = "wordlib.idx";
 	private static final String WORDLIB_DATA_FILE = "wordlib.dat";
+	private static final int MIN_WORDS_COUNT = 5;
 	static final SparseArray<Method> READERS = new SparseArray<Method>()
 	{
 		{
@@ -204,7 +205,7 @@ public class WordLib
 				for (String k : new Vector<String>(map.keySet()))
 				{
 					// Log.i("loadFromText", k);
-					if (map.get(k).size() < 2)
+					if (map.get(k).size() < MIN_WORDS_COUNT)
 						map.remove(k);
 				}
 
