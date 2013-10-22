@@ -20,5 +20,6 @@
     <string name="title_section3">Section 3</string>
     <string name="exit">退出</string>
     <string name="title_select_player_num">玩家人数</string>
+    <string name="next_step">下一步</string>
 
 </resources>

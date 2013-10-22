@@ -150,4 +150,12 @@ public class Rule
 		resetPlayerNumbers(i);
 	}
 
+	public int[] getNumPlayers()
+	{
+		int[] r = new int[PlayerType.values().length];
+		for (PlayerTypeInfo t : mPlayerInfos)
+			r[t.playerType.ordinal()] += t.numPlayers;
+		return r;
+	}
+
 }
