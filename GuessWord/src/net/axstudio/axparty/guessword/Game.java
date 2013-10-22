@@ -40,7 +40,7 @@ public class Game
 		{
 			Player player = new Player();
 			player.name = String.format(
-					mContext.getString(R.string.player_name), i);
+					mContext.getString(R.string.player_name), i+1);
 			mPlayers.add(player);
 
 		}
