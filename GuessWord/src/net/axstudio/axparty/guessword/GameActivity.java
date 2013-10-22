@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,8 +21,8 @@ public class GameActivity extends Activity
 {
 
 	private Game mGame;
-	private final Vector<Button> mPlayerViews = new Vector<Button>();
-
+	//private final Vector<Button> mPlayerViews = new Vector<Button>();
+	LinearLayout mPlayerButtons;
 	static private class OnPlayerButtonClick implements OnClickListener
 	{
 		private final Player mPlayer;
@@ -84,25 +85,32 @@ public class GameActivity extends Activity
 			finish();
 		}
 
-		final LinearLayout layout = new LinearLayout(this);
-		layout.setOrientation(LinearLayout.VERTICAL);
+		mPlayerButtons = new LinearLayout(this);
+		mPlayerButtons.setOrientation(LinearLayout.VERTICAL);
 
-		Player[] players = mGame.getPlayers();
-		mPlayerViews.clear();
+		
+		
+		((ScrollView) findViewById(R.id.scrollView1)).addView(mPlayerButtons);
+		// setContentView(layout);
 
+		startGame();
+	}
+	
+	void startGame()
+	{
+		mGame.start();
+		
+		mPlayerButtons.removeAllViews();
 		for (Player player : mGame.getPlayers())
 		{
 			Button button = new Button(this);
 			button.setOnClickListener(new OnPlayerButtonClick(player));
 			button.setText(player.name);
-			layout.addView(button);
-			mPlayerViews.add(button);
+			mPlayerButtons.addView(button);
 		}
-		((ScrollView) findViewById(R.id.scrollView1)).addView(layout);
-		// setContentView(layout);
 
-		mGame.start();
-
+		
+		
 	}
 
 	void updateView()
@@ -116,6 +124,55 @@ public class GameActivity extends Activity
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+		case R.id.action_settings:
+			break;
+		case R.id.restart_game:
+		{
+			final GameActivity activity = this;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setIcon(getResources().getDrawable(
+					android.R.drawable.ic_dialog_alert));
+			builder.setTitle(getString(R.string.restart_game_alert));
+			builder.setMessage(getString(R.string.restart_game_alert));
+			builder.setNegativeButton(android.R.string.yes,
+					new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							activity.startGame();
+						}
+					});
+			builder.setPositiveButton(android.R.string.no,
+					new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							// finish();
+						}
+					});
+			builder.create().show();
+
+		}
+			break;
+
+		default:
+			break;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	/*
